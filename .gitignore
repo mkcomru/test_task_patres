@@ -91,4 +91,46 @@ var/
 *.egg
 .pytest_cache/
 
+# Виртуальное окружение Python
+venv/
+ENV/
+env/
+.venv/
+.env/
+env.bak/
+venv.bak/
+
+# Базы данных
+*.db
+*.sqlite
+*.sqlite3
+
+# Локальные конфигурации
+instance/
+.webassets-cache
+
+# Временные файлы
+.temp
+.tmp
+.cache
+
+# Файлы JWT ключей
+*.pem
+*.key
+
+# Документация сборки
+docs/_build/
+docs/site/
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
 
