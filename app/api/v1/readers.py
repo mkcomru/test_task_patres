@@ -85,7 +85,7 @@ def delete_reader(
     reader_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
-) -> Any:
+) -> None:
     reader = crud_reader.get_reader(db, reader_id=reader_id)
     if reader is None:
         raise HTTPException(
@@ -93,4 +93,3 @@ def delete_reader(
             detail="Читатель не найден",
         )
     crud_reader.delete_reader(db, db_reader=reader)
-    return None

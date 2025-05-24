@@ -43,6 +43,16 @@ def count_active_borrowed_books_by_reader(db: Session, reader_id: int) -> int:
 
 
 def borrow_book(db: Session, borrow_data: BorrowBookCreate) -> BorrowedBook:
+    db_book = db.query(Book).filter(Book.id == borrow_data.book_id).first()
+    if db_book.quantity <= 0:
+        raise ValueError("Нет доступных экземпляров книги")
+    
+    active_books_count = count_active_borrowed_books_by_reader(
+        db, reader_id=borrow_data.reader_id
+    )
+    if active_books_count >= 3:
+        raise ValueError("Читатель уже взял максимальное количество книг (3)")
+    
     db_borrow = BorrowedBook(
         book_id=borrow_data.book_id,
         reader_id=borrow_data.reader_id,
@@ -50,7 +60,6 @@ def borrow_book(db: Session, borrow_data: BorrowBookCreate) -> BorrowedBook:
     )
     db.add(db_borrow)
     
-    db_book = db.query(Book).filter(Book.id == borrow_data.book_id).first()
     db_book.quantity -= 1
     db.add(db_book)
     
@@ -60,11 +69,12 @@ def borrow_book(db: Session, borrow_data: BorrowBookCreate) -> BorrowedBook:
 
 
 def return_book(db: Session, db_borrow: BorrowedBook) -> BorrowedBook:
-    # Проставляем дату возврата
+    if db_borrow.return_date:
+        raise ValueError("Книга уже возвращена")
+    
     db_borrow.return_date = datetime.utcnow()
     db.add(db_borrow)
     
-    # Увеличиваем количество доступных экземпляров книги
     db_book = db.query(Book).filter(Book.id == db_borrow.book_id).first()
     db_book.quantity += 1
     db.add(db_book)

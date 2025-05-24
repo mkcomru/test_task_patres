@@ -86,7 +86,7 @@ def delete_book(
     book_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
-) -> Any:
+) -> None:
     book = crud_book.get_book(db, book_id=book_id)
     if book is None:
         raise HTTPException(
@@ -94,4 +94,3 @@ def delete_book(
             detail="Книга не найдена",
         )
     crud_book.delete_book(db, db_book=book)
-    return None
